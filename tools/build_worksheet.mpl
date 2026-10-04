@@ -4,6 +4,7 @@
 # 产物：examples/FocusPeriod_Worksheet.mw。
 # 使用官方 DocumentTools:-Layout 和 Worksheet:-ToString API。
 # ContentToString 需要 Standard Worksheet GUI；ToString 可在命令行使用。
+# Windows 路径字符串使用 / 或 \\；单反斜杠会被当作转义符处理。
 # ======================================================================
 
 BuildWorksheet := proc(outputFile::string,
@@ -35,10 +36,12 @@ BuildWorksheet := proc(outputFile::string,
             "Maple Focus Period：焦点量与周期系数计算工作表",
             style=Heading1, layout=Heading1, alignment=left))),
         Text("先修改下方 repoRoot 为下载仓库的根目录，再由上至下执行各组输入。此示例执行 restart，建议在独立工作表中运行。核心算法只保存在 src/focus_period.mpl；本工作表用于设置系统、阶数并查看计算结果。"),
+        Text("Windows 路径必须正确书写：推荐用正斜杠 /，例如 D:/Maple/Maple_Focus_Period。若使用反斜杠，每个分隔符须写成双反斜杠。不要把资源管理器的单反斜杠路径直接粘入字符串，否则目录分隔符会被按转义字符处理，导致 currentdir、read 失败，随后报 FocusPeriod 不是模块。项目根目录应直接包含 src、examples 等文件夹。"),
+        Text("红色的一维 Maple Input 是可执行代码，可以直接运行，无须转换成二维数学公式；普通文字区仅用于说明，不执行。请先执行第 1 块并确认版本显示为 1.0.1，再运行其余输入块；也可点击执行工作表。"),
         Text("固定 x=r*cos(theta)、y=r*sin(theta)，所以 H[0]=-1。g[n] 采用 u[n](2*Pi)/(2*Pi)，n>=2。P 的时间密度取负号，保证 P(0)=2*Pi；只有已独立证明为中心时，P 才是真实周期函数。"),
 
         Heading("1. 加载核心程序"),
-        Code(cat("restart:\nrepoRoot := ",sprintf("%a",repoRoot),":\n",
+        Code(cat("restart:\n# Windows 路径用 /；若用反斜杠，每个分隔符要写两次。\n# 把下面的示例目录改成你实际的项目根目录（直接包含 src）。\nrepoRoot := ",sprintf("%a",repoRoot),":\n",
                  "currentdir(repoRoot):\nread \"src/focus_period.mpl\":\n",
                  "FocusPeriod:-Version();")),
 

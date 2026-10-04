@@ -1,4 +1,7 @@
 # 从仓库根目录运行：read "examples/01_center.mpl";
+# 先设置实际根目录：currentdir("D:/Maple/Maple_Focus_Period"):
+# Windows 路径字符串使用 / 或 \\；单反斜杠会被当作转义符，导致找不到文件。
+# 在可执行 Maple Input 中运行；一维代码无需转换成二维公式。
 # 独立示例会 restart 清除工作表变量。核心算法在 src/focus_period.mpl。
 restart:
 read "src/focus_period.mpl":

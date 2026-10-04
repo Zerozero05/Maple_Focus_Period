@@ -2,7 +2,9 @@
 
 从原始标准平面多项式微分方程组出发，自动计算极坐标系数、径向递推系数、焦点量和周期系数的 Maple 程序。主程序带有中文注释，只依赖 Maple 内置功能。
 
-当前版本：**v1.0.0**。程序已在 **Maple 2025.1** 中实际运行验证。其他 Maple 版本尚未逐一测试。
+当前版本：**v1.0.1**。程序已在 **Maple 2025.1** 中实际运行验证。其他 Maple 版本尚未逐一测试。
+
+**Windows 路径在 Maple 字符串中推荐使用正斜杠 `/`；使用反斜杠时，每个分隔符要写成 `\\`。红色的一维 Maple Input 可以直接执行。** 下载和路径示例见下面第 2 节。
 
 [GitHub 仓库](https://github.com/Zerozero05/Maple_Focus_Period) · [数学说明](docs/mathematics.md) · [验证记录](docs/validation.md) · [版本变更](CHANGELOG.md)
 
@@ -51,11 +53,34 @@ $$
 
 ## 2. 下载到电脑
 
-首次使用建议下载整个项目，这样示例、主程序和工作表的相对路径都能保持一致。
+### 只下载一个主程序文件
+
+只调用核心程序时，只需下载单个 `focus_period.mpl`，不依赖 `src`、`examples`、`tests` 或 `docs` 文件夹。
+打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.0.1/focus_period.mpl)。
+
+假设文件保存在 `C:/Maple/focus_period.mpl`，在 Maple 的可执行输入区运行以下语句；将 `read` 中的绝对路径换成自己文件的位置：
+
+```maple
+restart:
+read "C:/Maple/focus_period.mpl":
+FocusPeriod:-Version();
+# v1.0.1 返回 "1.0.1"。
+
+X := (1+b*x)*(y+a*x*y):
+Y := (1+b*x)*(-x+a*y^2):
+ans := FocusPeriod:-Compute(X,Y,x,y,5,4):
+FocusPeriod:-Show(ans);
+```
+
+这一方式不需要设置 `currentdir`。计算自己的系统时，修改 `X`、`Y` 和 `Compute` 最后两个最高阶参数即可。
+
+### 下载整个项目和工作表
+
+使用 `.mw` 工作表和现成示例时，下载整个项目，保留它们与主程序的相对路径。
 
 1. 打开 [GitHub 仓库](https://github.com/Zerozero05/Maple_Focus_Period)。
-2. 获取固定版本时，打开 [v1.0.0 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.0)，下载 **Source code (zip)**；获取当前开发版时，点击 **Code → Download ZIP**。
-3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.0.0`，当前开发版通常名为 `Maple_Focus_Period-main`。
+2. 获取固定版本时，打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载 **Source code (zip)**；获取当前开发版时，点击 **Code → Download ZIP**。
+3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.0.1`，当前开发版通常名为 `Maple_Focus_Period-main`。
 4. 将解压后的项目文件夹改名为 `Maple_Focus_Period`，放到自己方便使用的位置。
 
 以下说明统一假设项目保存在：
@@ -65,6 +90,27 @@ D:/Maple/Maple_Focus_Period
 ```
 
 这只是示例位置。请换成自己的实际路径。该目录内应当直接有 `src`、`examples`、`tests` 和 `docs` 四个文件夹，而不是还隔着一层 ZIP 解压目录。
+
+### Windows 路径怎么写？
+
+Maple 把字符串中的反斜杠作为转义字符。推荐第一种写法，第二种也可以；不要将文件管理器里的单反斜杠路径原样粘贴到字符串中：
+
+```maple
+# 正确：推荐使用正斜杠。
+repoRoot := "D:/Maple/Maple_Focus_Period":
+
+# 正确：每个反斜杠写两次。
+repoRoot := "D:\\Maple\\Maple_Focus_Period":
+
+# 错误示例，不要执行：单反斜杠可能被忽略或变成控制字符。
+# repoRoot := "D:\Maple\Maple_Focus_Period":
+```
+
+此规则同样适用于 `read` 的文件路径。Maplesoft 的 [反斜杠说明](https://cn.maplesoft.com/support/help/Maple/view.aspx?path=backslash) 明确支持 `/` 和双反斜杠两种 Windows 路径写法。
+
+### 输入区应该是什么样？
+
+在 Maple 的 `>` 提示符输入区，红色代码是 **1-D Maple Input**，可直接按 Enter 执行；普通说明文字用于阅读，需要将程序语句放入可执行输入区。也可使用 2-D 数学输入，但本项目的代码示例按一维 Maple 语法书写。见 Maplesoft 的 [1-D 与 2-D 输入说明](https://www.maplesoft.com/support/help/errors/view.aspx?path=worksheet/documenting/2Dmath)。
 
 ## 3. `.mpl` 和 `.mw` 有什么区别？
 
@@ -82,7 +128,7 @@ D:/Maple/Maple_Focus_Period
 
 ## 4. 第一次运行：先算一个中心示例
 
-打开 Maple，将下面的语句放入可执行输入区，并按顺序执行：
+下载完整项目后，打开 Maple，将下面的语句放入 `>` 可执行输入区，并按顺序执行。红色的一维输入可直接运行，路径按第 2 节的写法填写：
 
 ```maple
 restart:
@@ -140,10 +186,10 @@ read "examples/02_focus.mpl";
 ### 在 `.mw` 工作表中运行
 
 1. 保留整个项目文件夹，在 Maple 中打开 `examples/FocusPeriod_Worksheet.mw`。
-2. 在第一个可执行输入块中，将 `repoRoot` 改为自己的项目根目录，例如 `"D:/Maple/Maple_Focus_Period"`。
-3. 从上到下执行各输入块，先加载程序，再定义系统和计算阶数，最后查看结果。
+2. 在第一个可执行输入块中，将 `repoRoot` 改为自己的项目根目录，例如 `"D:/Maple/Maple_Focus_Period"`；使用 `/`，或将每个反斜杠写成 `\\`。该目录内应直接有 `src/focus_period.mpl`。
+3. 按 Enter 执行第一个红色的一维输入块，确认显示版本 `"1.0.1"` 后，再从上到下执行其余输入块。如果先出现目录或文件错误，修正路径并重新执行加载块。
 4. 分析自己的模型时，修改工作表中的 `X`、`Y`、`Ng`、`Np`；建议另存到项目根目录下自建的 `models` 文件夹。
-5. 工作表默认使用已验证的中心示例。核心算法始终来自 `src/focus_period.mpl`，不需要把算法代码粘进工作表。
+5. 修改路径或系统后保存工作表；标题旁的 `*` 表示有尚未保存的修改。工作表默认使用已验证的中心示例，核心算法始终来自 `src/focus_period.mpl`，不需要把算法代码粘进工作表。
 
 ## 5. 改成自己的系统
 
@@ -288,7 +334,10 @@ polar["theta_dot"];
 
 | 现象或报错 | 原因与处理 |
 |---|---|
-| `read` 找不到文件 | 确认 `currentdir()` 显示的是项目根目录，目录内有 `src` 和 `examples`；检查拼写及 ZIP 是否解压 |
+| `currentdir` 提示目录不存在，报错路径变成 `D:MapleMaple_Focus_Period` | 单反斜杠在字符串中被转义；按第 2 节改用 `/` 或双反斜杠，再确认路径确实存在、没有选错解压层级 |
+| `read` 找不到文件 | 完整项目用法先确认 `currentdir()` 是含 `src` 和 `examples` 的项目根目录；单文件用法检查 `read` 中的绝对文件路径 |
+| 目录错误后，又出现 `read` 或 `FocusPeriod:-Compute` 模块错误 | 目录未切换成功，导致主程序未加载；先修正第一个路径错误，再执行 `restart`、正确的加载语句和系统定义，最后调用 `Compute` |
+| 代码是红色的一维输入 | 这是可执行的 Maple Input；在 `>` 输入区按 Enter 执行。普通说明文字需将代码放入可执行输入区 |
 | 加载主程序后没有计算结果 | `src/focus_period.mpl` 只定义模块；继续调用 `Compute`，或执行一个示例文件 |
 | 看不到赋值结果 | Maple 中冒号 `:` 抑制显示；用分号 `;` 显示表达式，或调用 `Show` |
 | 提示线性矩阵必须为 `[[0,1],[-1,0]]` | 检查一次项是否恰为 `X=y+...`、`Y=-x+...`；程序不会自动翻转向量场或变换线性部分 |
@@ -303,7 +352,7 @@ polar["theta_dot"];
 
 `restart` 会清除当前会话的变量赋值及已加载模块。执行后需要重新加载主程序、重新定义 `X` 和 `Y`。若修改了程序文件，仅保存磁盘文件不会更新已加载的模块。
 
-路径建议用 Maple 字符串中的正斜杠，例如 `"D:/Maple/Maple_Focus_Period"`。避免把系统文件管理器中的反斜杠路径原样拼入多层字符串。
+路径写法统一参照第 2 节。遇到一串连续报错时，从最先出现的目录或文件错误开始处理，成功加载模块后再继续计算。
 
 ## 9. 文件结构与验证
 
@@ -348,7 +397,7 @@ read "tests/verify_maple.mpl";
 
 ```maple
 FocusPeriod:-Version();
-# v1.0.0 对应返回字符串 "1.0.0"。
+# v1.0.1 对应返回字符串 "1.0.1"。
 ```
 
 仓库中的 [VERSION](VERSION) 保存版本号，[CHANGELOG.md](CHANGELOG.md) 记录每个版本的具体改动、接口变化和验证情况。固定版本标签便于今后复现同一组结果。

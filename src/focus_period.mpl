@@ -8,6 +8,12 @@
 #   read "src/focus_period.mpl":
 #   ans := FocusPeriod:-Compute(X, Y, x, y, 5, 4):
 #   FocusPeriod:-Show(ans);
+# Windows 路径：Maple 字符串中推荐使用 /，如 "D:/Maple/focus_period.mpl"。
+# 若使用反斜杠，每个目录分隔符必须写成 \\，如 "D:\\Maple\\focus_period.mpl"。
+# 不要直接粘贴资源管理器的单反斜杠路径；它会被当作转义符处理。
+# currentdir 失败会使 read 失败，继而出现 FocusPeriod 不是模块的错误；先修正路径。
+# 单文件下载后可直接 read "D:/Maple/focus_period.mpl":，无需其他项目文件。
+# 红色的一维 Maple Input 是可执行代码，不必转换成二维公式；普通文字区不执行。
 # 最后两个参数分别为焦点量最高指数 Ng、周期系数最高指数 Np。
 # Ng=0 关闭焦点量输出；Ng>=2 输出 g[2]..g[Ng]；Np=0 只保留 P(0)。
 #
@@ -37,7 +43,7 @@ FocusPeriod := module()
 
     # 每个发布版本同步维护此版本号、根目录 VERSION 和 CHANGELOG.md。
     Version := proc()
-        return "1.0.0";
+        return "1.0.1";
     end proc;
 
     Clean := proc(f)

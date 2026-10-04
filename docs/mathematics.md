@@ -1,6 +1,6 @@
 # 数学公式与论文对应
 
-本说明对应 v1.0.0。运行步骤见 [README](../README.md)，实际验证见 [验证记录](validation.md)。
+本说明对应 v1.0.1。运行步骤见 [README](../README.md)，实际验证见 [验证记录](validation.md)。
 
 ## 计算公式
 
