@@ -1,0 +1,23 @@
+name: Independent mathematical verification
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  symbolic-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install verification dependency
+        run: python -m pip install -r requirements-test.txt
+      - name: Verify exact solutions and the published period formula
+        run: python tests/verify_math.py

@@ -1,0 +1,16 @@
+# 用户模型和计算结果；每次更新仓库时保留本地内容。
+/models/
+/results/
+/tmp/
+
+# Python 与编辑器的临时文件。
+__pycache__/
+*.py[cod]
+.venv/
+*.bak
+*.swp
+*~
+
+# 系统文件。
+Thumbs.db
+.DS_Store

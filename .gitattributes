@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.mpl text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.mw text eol=lf
