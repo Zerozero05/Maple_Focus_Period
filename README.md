@@ -4,7 +4,7 @@
 
 计算过程中的 `G`、`H`、`A`、`R`、`u`、`du`、`B` 等中间量全部保存在结果表 `ans` 中，便于核对公式和分析模型。第 6 节逐一解释它们的含义、下标范围与查看代码。
 
-当前版本：**v1.0.2**。程序已在 **Maple 2025.1** 中实际运行验证。其他 Maple 版本尚未逐一测试。
+当前程序版本：**v1.0.1**；使用说明于 **2026-10-10** 更新。程序已在 **Maple 2025.1** 中实际运行验证。其他 Maple 版本尚未逐一测试。
 
 **Windows 路径在 Maple 字符串中推荐使用正斜杠 `/`；使用反斜杠时，每个分隔符要写成 `\\`。红色的一维 Maple Input 可以直接执行。** 下载和路径示例见下面第 2 节。
 
@@ -68,7 +68,7 @@ $$
 ### 只下载一个主程序文件
 
 只调用核心程序时，只需下载单个 `focus_period.mpl`，不依赖 `src`、`examples`、`tests` 或 `docs` 文件夹。
-打开 [v1.0.2 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.2)，下载附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.0.2/focus_period.mpl)。
+打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.0.1/focus_period.mpl)。
 
 假设文件保存在 `C:/Maple/focus_period.mpl`，在 Maple 的可执行输入区运行以下语句；将 `read` 中的绝对路径换成自己文件的位置：
 
@@ -76,7 +76,7 @@ $$
 restart:
 read "C:/Maple/focus_period.mpl":
 FocusPeriod:-Version();
-# v1.0.2 返回 "1.0.2"。
+# v1.0.1 返回 "1.0.1"。
 
 X := (1+b*x)*(y+a*x*y):
 Y := (1+b*x)*(-x+a*y^2):
@@ -91,9 +91,11 @@ FocusPeriod:-Show(ans);
 使用 `.mw` 工作表和现成示例时，下载整个项目，保留它们与主程序的相对路径。
 
 1. 打开 [GitHub 仓库](https://github.com/Zerozero05/Maple_Focus_Period)。
-2. 获取固定版本时，打开 [v1.0.2 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.2)，下载 **Source code (zip)**；获取当前开发版时，点击 **Code → Download ZIP**。
-3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.0.2`，当前开发版通常名为 `Maple_Focus_Period-main`。
+2. 获取固定版本时，打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载 **Source code (zip)**；获取当前开发版时，点击 **Code → Download ZIP**。
+3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.0.1`，当前开发版通常名为 `Maple_Focus_Period-main`。
 4. 将解压后的项目文件夹改名为 `Maple_Focus_Period`，放到自己方便使用的位置。
+
+本次更新说明、查询示例和工作表，程序版本仍为 `v1.0.1`。固定发行版的源码包保留发布时的原样；需要本 README 新增的 `03_inspect.mpl` 与最新工作表时，请用 **Code → Download ZIP** 获取当前主分支。它们也可以调用 v1.0.1 的单文件主程序。
 
 以下说明统一假设项目保存在：
 
@@ -200,7 +202,7 @@ read "examples/02_focus.mpl";
 
 1. 保留整个项目文件夹，在 Maple 中打开 `examples/FocusPeriod_Worksheet.mw`。
 2. 在第一个可执行输入块中，将 `repoRoot` 改为自己的项目根目录，例如 `"D:/Maple/Maple_Focus_Period"`；使用 `/`，或将每个反斜杠写成 `\\`。该目录内应直接有 `src/focus_period.mpl`。
-3. 按 Enter 执行第一个红色的一维输入块，确认显示版本 `"1.0.2"` 后，再从上到下执行其余输入块。如果先出现目录或文件错误，修正路径并重新执行加载块。
+3. 按 Enter 执行第一个红色的一维输入块，确认显示版本 `"1.0.1"` 后，再从上到下执行其余输入块。如果先出现目录或文件错误，修正路径并重新执行加载块。
 4. 分析自己的模型时，修改工作表中的 `X`、`Y`、`Ng`、`Np`；建议另存到项目根目录下自建的 `models` 文件夹。
 5. 修改路径或系统后保存工作表；标题旁的 `*` 表示有尚未保存的修改。工作表默认使用已验证的中心示例，核心算法始终来自 `src/focus_period.mpl`，不需要把算法代码粘进工作表。
 
@@ -487,15 +489,17 @@ read "tests/verify_maple.mpl";
 
 ```maple
 FocusPeriod:-Version();
-# v1.0.2 对应返回字符串 "1.0.2"。
+# v1.0.1 对应返回字符串 "1.0.1"。
 ```
 
 仓库中的 [VERSION](VERSION) 保存版本号，[CHANGELOG.md](CHANGELOG.md) 记录每个版本的具体改动、接口变化和验证情况。固定版本标签便于今后复现同一组结果。
 
 更新时，建议下载新的完整版本到单独文件夹，先保留自己的系统文件和旧版本结果。将旧版 `user_system.mpl` 中的 `X`、`Y`、`Ng`、`Np` 复制到新版入口，再按新版 README 设置路径、执行 `restart` 并重新加载。确认示例及自己的低阶结果后，再进行高阶计算。
 
-本项目后续收到明确的修改任务时，会同步维护相关程序、说明、验证记录和版本变更。
-每次完成维护后更新版本号；修复和说明更新递增修订版本，兼容功能扩展递增次版本，不兼容变更递增主版本。
+本项目后续收到明确的修改任务时，会同步维护相关程序、说明和验证记录。
+仅修改说明、注释或不影响接口与运行行为的命名整理时，只更新仓库，不递增版本号或发布新版本。功能、算法或运行行为发生实际变更时，才按改动更新程序版本；行为修复递增修订版本，兼容功能扩展递增次版本，不兼容变更递增主版本。
+发行版标题只写版本号，例如 `v1.0.1`；项目名和改动说明写在发行版正文中。
+发布新版本前，先完成修改和验证，并列出拟发布的版本号、改动、发行说明与附件；待使用者明确确认后再发布。更新仓库中的说明不代表发布新程序版本。
 具体维护约定保存在 [AGENTS.md](AGENTS.md)。本项目没有建立后台监测；提出修改需求后再执行相应更新。
 
 个人模型和计算结果可放在自己创建的 `models/`、`results/` 文件夹，仓库默认忽略这些目录。

@@ -53,7 +53,7 @@ FocusPeriod := module()
 
     # 每个发布版本同步维护此版本号、根目录 VERSION 和 CHANGELOG.md。
     Version := proc()
-        return "1.0.2";
+        return "1.0.1";
     end proc;
 
     Clean := proc(f)
