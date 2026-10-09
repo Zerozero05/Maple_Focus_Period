@@ -37,7 +37,7 @@ BuildWorksheet := proc(outputFile::string,
             style=Heading1, layout=Heading1, alignment=left))),
         Text("先修改下方 repoRoot 为下载仓库的根目录，再由上至下执行各组输入。此示例执行 restart，建议在独立工作表中运行。核心算法只保存在 src/focus_period.mpl；本工作表用于设置系统、阶数并查看计算结果。"),
         Text("Windows 路径必须正确书写：推荐用正斜杠 /，例如 D:/Maple/Maple_Focus_Period。若使用反斜杠，每个分隔符须写成双反斜杠。不要把资源管理器的单反斜杠路径直接粘入字符串，否则目录分隔符会被按转义字符处理，导致 currentdir、read 失败，随后报 FocusPeriod 不是模块。项目根目录应直接包含 src、examples 等文件夹。"),
-        Text("红色的一维 Maple Input 是可执行代码，可以直接运行，无须转换成二维数学公式；普通文字区仅用于说明，不执行。请先执行第 1 块并确认版本显示为 1.0.1，再运行其余输入块；也可点击执行工作表。"),
+        Text("红色的一维 Maple Input 是可执行代码，可以直接运行，无须转换成二维数学公式；普通文字区仅用于说明，不执行。请先执行第 1 块并确认版本显示为 1.0.2，再运行其余输入块；也可点击执行工作表。"),
         Text("固定 x=r*cos(theta)、y=r*sin(theta)，所以 H[0]=-1。g[n] 采用 u[n](2*Pi)/(2*Pi)，n>=2。P 的时间密度取负号，保证 P(0)=2*Pi；只有已独立证明为中心时，P 才是真实周期函数。"),
 
         Heading("1. 加载核心程序"),
@@ -54,7 +54,7 @@ BuildWorksheet := proc(outputFile::string,
         Text("本中心示例的预期结果：G[2]=a*sin(theta)，G[3]=a*b*cos(theta)*sin(theta)，H[0]=-1，H[1]=-b*cos(theta)，H[2]=0；g[2] 到 g[5] 全部为 0；p[2]=Pi*b*(b-a)，p[3]=-2*Pi*a*b*(b-a)。"),
 
         Heading("4. 查看中间量与周期展开"),
-        Text("theta、r、rho 是模块私有符号。代入角度或半径时先从结果表取出对应符号，避免与系统参数的同名符号混淆。A、u、du、R、G、H、g、p 都保存在 ans 中，可按所需索引访问。"),
+        Text("G、H、A、R 是按当前半径 r 展开的系数；u、du、B、p 是按初始半径 rho 展开的系数。A 是角速度倒数，B 是代入径向解后带负号的时间密度；p[n] 积分 B[n]，不能直接积分 A[n]。所有量都保存在 ans 中。theta、r、rho 是模块私有符号，代入前须从 ans 获取。u[n] 是表达式，初值通过 eval 查询。完整变量表、下标范围及批量查询见 README 第6节和 examples/03_inspect.mpl。"),
         Code("th := ans[\"theta\"]:\nrh := ans[\"rho\"]:\nans[\"A\"][0];\nans[\"A\"][1];\nans[\"R\"][2];\nans[\"u\"][2];\nans[\"du\"][2];\nsimplify(eval(ans[\"u\"][2],th=0));\nans[\"p\"][2];\nans[\"P_series\"];\neval(ans[\"P_series\"],{a=1,b=2});"),
         Text("最后一项应为 2*Pi+2*Pi*rh^2-4*Pi*rh^3+(15*Pi/2)*rh^4。u[2](0) 应为 0。"),
 

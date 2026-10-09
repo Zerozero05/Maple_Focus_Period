@@ -17,6 +17,16 @@
 # 最后两个参数分别为焦点量最高指数 Ng、周期系数最高指数 Np。
 # Ng=0 关闭焦点量输出；Ng>=2 输出 g[2]..g[Ng]；Np=0 只保留 P(0)。
 #
+# 关键量都保存在 Compute 返回的 table 中，例如 ans["G"][2]：
+# G[j] 是 dr/dt 的 r^j 系数，H[j] 是 dtheta/dt 的 r^j 系数。
+# A[j] 是 1/(dtheta/dt) 的 r^j 系数；R[j] 是 dr/dtheta 的 r^j 系数。
+# u[n] 是 r(theta,rho) 的 rho^n 系数；du[n] 是它对 theta 的导数。
+# g[n] 是返回位移的归一化系数；B[n] 是带方向负号的时间密度的 rho^n 系数。
+# p[n] 是 B[n] 在 0..2*Pi 的积分；不能直接用 -int(A[n],...) 替代。
+# 查看一整组用 ans["A"];，逐项列表用 [seq(ans["A"][j],j=0..ans["A_order"])];
+# u[n] 保存的是表达式，不是函数；初值用 eval(ans["u"][n],ans["theta"]=0)。
+# 下标范围、所有结果字段和查询示例见 README 第6节、examples/03_inspect.mpl。
+#
 # 本程序采用用户约定：g[n]=u[n](2*Pi)/(2*Pi)，n>=2。
 # u[1]=1 是初始半径项，不是返回位移，故不定义 g[1]。
 # 所有 g[n] 均为完整返回系数，不自动模掉前面的焦点量。
@@ -43,7 +53,7 @@ FocusPeriod := module()
 
     # 每个发布版本同步维护此版本号、根目录 VERSION 和 CHANGELOG.md。
     Version := proc()
-        return "1.0.1";
+        return "1.0.2";
     end proc;
 
     Clean := proc(f)

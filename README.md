@@ -1,12 +1,22 @@
 # Maple_Focus_Period
 
-从原始标准平面多项式微分方程组出发，自动计算极坐标系数、径向递推系数、焦点量和周期系数的 Maple 程序。主程序带有中文注释，只依赖 Maple 内置功能。
+从原始标准平面多项式系统的右端 `X(x,y)`、`Y(x,y)`，自动计算焦点量 `g[n]` 与周期系数 `p[n]`，两类最高阶分别指定。主程序带有中文注释，只依赖 Maple 内置功能，可单文件加载，也可通过 `.mw` 工作表使用。
 
-当前版本：**v1.0.1**。程序已在 **Maple 2025.1** 中实际运行验证。其他 Maple 版本尚未逐一测试。
+计算过程中的 `G`、`H`、`A`、`R`、`u`、`du`、`B` 等中间量全部保存在结果表 `ans` 中，便于核对公式和分析模型。第 6 节逐一解释它们的含义、下标范围与查看代码。
+
+当前版本：**v1.0.2**。程序已在 **Maple 2025.1** 中实际运行验证。其他 Maple 版本尚未逐一测试。
 
 **Windows 路径在 Maple 字符串中推荐使用正斜杠 `/`；使用反斜杠时，每个分隔符要写成 `\\`。红色的一维 Maple Input 可以直接执行。** 下载和路径示例见下面第 2 节。
 
 [GitHub 仓库](https://github.com/Zerozero05/Maple_Focus_Period) · [数学说明](docs/mathematics.md) · [验证记录](docs/validation.md) · [版本变更](CHANGELOG.md)
+
+| 你想做什么？ | 从这里开始 |
+|---|---|
+| 只下载一个文件，在自己的工作表中调用 | [下载与单文件快速运行](#2-下载到电脑) |
+| 先运行已验证的示例，确认环境正常 | [中心示例与工作表步骤](#4-第一次运行先算一个中心示例) |
+| 输入自己的系统，指定两类计算阶数 | [系统输入与阶数设置](#5-改成自己的系统) |
+| 理解和查看 `G`、`H`、`A`、`u` 等变量 | [关键变量表与查询代码](#6-查看结果和中间量) |
+| 处理路径、加载或参数方面的报错 | [常见问题](#8-常见问题) |
 
 ## 1. 这个程序接收什么，输出什么？
 
@@ -25,8 +35,10 @@ $$
 原始多项式 X、Y
     → 极坐标化，提取 G[i]、H[i]
     → 角速度倒数系数 A[i]
-    → 径向方程系数 R[i]，径向解系数 u[i]
-    → 焦点量 g[n] 和周期系数 p[n]
+    → 径向方程系数 R[i]，递推 du[n]、u[n]
+    ├─ u[n](2*Pi) 给出焦点量 g[n]
+    └─ 将径向解代入倒数展开，得到时间密度系数 B[n]
+          → 对 B[n] 积分，得到周期系数 p[n]
 ```
 
 程序始终保留
@@ -56,7 +68,7 @@ $$
 ### 只下载一个主程序文件
 
 只调用核心程序时，只需下载单个 `focus_period.mpl`，不依赖 `src`、`examples`、`tests` 或 `docs` 文件夹。
-打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.0.1/focus_period.mpl)。
+打开 [v1.0.2 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.2)，下载附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.0.2/focus_period.mpl)。
 
 假设文件保存在 `C:/Maple/focus_period.mpl`，在 Maple 的可执行输入区运行以下语句；将 `read` 中的绝对路径换成自己文件的位置：
 
@@ -64,7 +76,7 @@ $$
 restart:
 read "C:/Maple/focus_period.mpl":
 FocusPeriod:-Version();
-# v1.0.1 返回 "1.0.1"。
+# v1.0.2 返回 "1.0.2"。
 
 X := (1+b*x)*(y+a*x*y):
 Y := (1+b*x)*(-x+a*y^2):
@@ -79,8 +91,8 @@ FocusPeriod:-Show(ans);
 使用 `.mw` 工作表和现成示例时，下载整个项目，保留它们与主程序的相对路径。
 
 1. 打开 [GitHub 仓库](https://github.com/Zerozero05/Maple_Focus_Period)。
-2. 获取固定版本时，打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载 **Source code (zip)**；获取当前开发版时，点击 **Code → Download ZIP**。
-3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.0.1`，当前开发版通常名为 `Maple_Focus_Period-main`。
+2. 获取固定版本时，打开 [v1.0.2 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.2)，下载 **Source code (zip)**；获取当前开发版时，点击 **Code → Download ZIP**。
+3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.0.2`，当前开发版通常名为 `Maple_Focus_Period-main`。
 4. 将解压后的项目文件夹改名为 `Maple_Focus_Period`，放到自己方便使用的位置。
 
 以下说明统一假设项目保存在：
@@ -119,6 +131,7 @@ repoRoot := "D:\\Maple\\Maple_Focus_Period":
 | [src/focus_period.mpl](src/focus_period.mpl) | 主程序，定义 `FocusPeriod` 模块 | 在 Maple 中用 `read` 加载；单独加载不会计算示例 |
 | [examples/01_center.mpl](examples/01_center.mpl) | 已知中心的计算示例 | 在 Maple 中用 `read` 执行 |
 | [examples/02_focus.mpl](examples/02_focus.mpl) | 焦点量及符号方向的计算示例 | 在 Maple 中用 `read` 执行 |
+| [examples/03_inspect.mpl](examples/03_inspect.mpl) | 查看变量、下标与中间量的示例 | 在 Maple 中用 `read` 执行，或参考第 6 节 |
 | [examples/user_system.mpl](examples/user_system.mpl) | 自己的系统的编辑入口 | 修改 `X`、`Y`、`Ng`、`Np` 后执行 |
 | [examples/FocusPeriod_Worksheet.mw](examples/FocusPeriod_Worksheet.mw) | Maple 工作表入口 | 用 Maple 打开，设置路径后按工作表中的步骤运行 |
 
@@ -187,7 +200,7 @@ read "examples/02_focus.mpl";
 
 1. 保留整个项目文件夹，在 Maple 中打开 `examples/FocusPeriod_Worksheet.mw`。
 2. 在第一个可执行输入块中，将 `repoRoot` 改为自己的项目根目录，例如 `"D:/Maple/Maple_Focus_Period"`；使用 `/`，或将每个反斜杠写成 `\\`。该目录内应直接有 `src/focus_period.mpl`。
-3. 按 Enter 执行第一个红色的一维输入块，确认显示版本 `"1.0.1"` 后，再从上到下执行其余输入块。如果先出现目录或文件错误，修正路径并重新执行加载块。
+3. 按 Enter 执行第一个红色的一维输入块，确认显示版本 `"1.0.2"` 后，再从上到下执行其余输入块。如果先出现目录或文件错误，修正路径并重新执行加载块。
 4. 分析自己的模型时，修改工作表中的 `X`、`Y`、`Ng`、`Np`；建议另存到项目根目录下自建的 `models` 文件夹。
 5. 修改路径或系统后保存工作表；标题旁的 `*` 表示有尚未保存的修改。工作表默认使用已验证的中心示例，核心算法始终来自 `src/focus_period.mpl`，不需要把算法代码粘进工作表。
 
@@ -268,55 +281,131 @@ simplify(ans["p"][2]) assuming a>0, b>a;
 
 ## 6. 查看结果和中间量
 
-`FocusPeriod:-Show(ans)` 用于显示一份简洁结果。`ans` 本身是 Maple `table`，保留全部中间量，字符串键需要加双引号。
+`ans := FocusPeriod:-Compute(...)` 返回 Maple `table`，包含本次计算的全部中间量；字符串键需要加双引号。`FocusPeriod:-Show(ans)` 只显示次数、`H0`、非线性 `G` 与 `H`、所请求的 `g` 与 `p`，以及周期展开摘要；`A`、`R`、`u`、`du`、`B` 需要按下面的方法查看。完整示例见 [examples/03_inspect.mpl](examples/03_inspect.mpl)。
 
-| Maple 访问方式 | 内容 |
+### 阶数、角变量与两种半径
+
+| 记号与访问方式 | 含义 |
 |---|---|
-| `ans["degree"]` | 输入多项式的最高总次数 |
-| `ans["G"][j]`、`ans["H"][j]` | 极坐标系数，`ans["H"][0]=-1` |
-| `ans["r_dot"]`、`ans["theta_dot"]` | 极坐标中的两个微分方程右端 |
-| `ans["A"][j]` | 角速度倒数展开系数，`ans["A"][0]=-1` |
-| `ans["R"][j]` | `dr/dtheta` 展开系数 |
-| `ans["u"][n]`、`ans["du"][n]` | 径向解系数及其角度导数 |
-| `ans["g"][n]`、`ans["p"][n]` | 焦点量、周期系数 |
-| `ans["B"][n]` | 已处理方向符号的时间密度系数 |
-| `ans["r_series"]`、`ans["P_series"]` | 截断径向解、截断周期展开 |
-| `ans["time_density_series"]` | 代入径向解后的时间密度展开 |
-| `ans["Ng"]`、`ans["Np"]` | 请求的焦点量和周期系数阶数 |
-| `ans["u_order"]`、`ans["A_order"]` | 实际计算的中间阶数 |
+| `d = ans["degree"]` | `X`、`Y` 关于状态变量的最高总次数，包含线性项，因此 `d>=1` |
+| `Ng = ans["Ng"]` | 请求的焦点量最高指数；`0` 表示关闭，其他允许值为不小于 `2` 的整数 |
+| `Np = ans["Np"]` | 请求的周期系数最高指数；非负整数 |
+| `Nu = ans["u_order"]` | 实际径向解递推阶数，`Nu=max(1,Ng,Np)` |
+| `NA = ans["A_order"]` | 实际倒数展开阶数，`NA=max(0,Np,Nu-2)` |
+| `ans["theta"]` | 角变量；真实正时间方向为角度递减，程序仍按 `0..2*Pi` 计算 `g` |
+| `ans["r"]` | 极坐标中的瞬时半径，出现在 `r_dot`、`theta_dot` 与倒数的 `r` 展开中 |
+| `ans["rho"]` | 初始半径，满足 `r(0,rho)=rho`；径向解和周期函数按它展开 |
 
-只访问已经计算的阶数。例如 `Np=4` 时，不能把 `ans["p"][6]` 当作已计算结果。
-`G` 的下标为 `0..degree`，`H` 的下标为 `0..degree-1`；线性系统的 `degree=1`，此时应查看 `ans["G"]`，而不要读取不存在的 `G[2]`。
+`theta`、`r`、`rho` 是模块私有符号。全局同名参数与它们不是同一个符号，代入时须使用结果表返回的名字。例如 `r_series` 中的 `rho` 不是尚未代入径向解的瞬时半径 `r`。
 
-角变量及半径变量使用模块私有符号，避免和系统中的同名参数碰撞。进行代入或提取系数时，请从结果表中获取这些符号：
+### 极坐标、倒数展开与径向递推
+
+这些系数依次满足
+
+$$
+\dot r=\sum_{j=2}^{d}G_j(\theta)r^j,\qquad
+H(\theta,r)=\dot\theta=\sum_{j=0}^{d-1}H_j(\theta)r^j,
+$$
+
+$$
+\frac1{H(\theta,r)}=\sum_{j\ge0}A_j(\theta)r^j,\qquad
+\frac{dr}{d\theta}=\sum_{j\ge2}R_j(\theta)r^j,\qquad
+r(\theta,\rho)=\sum_{n\ge1}u_n(\theta)\rho^n.
+$$
+
+| 变量与访问方式 | 定义与作用 | 实际保存的下标 |
+|---|---|---|
+| `ans["G"][j]` | `r_dot` 中 `r^j` 的系数，描述半径随时间的变化 | `0..d`；`G[0]=G[1]=0` |
+| `ans["H"][j]` | `theta_dot` 中 `r^j` 的系数，描述角速度 | `0..d-1`；`H[0]=-1`，也存为 `ans["H0"]` |
+| `ans["A"][j]` | `1/H(theta,r)` 中 `r^j` 的系数；通过倒数递推生成，用于径向与时间计算 | `0..NA`；`A[0]=-1` |
+| `ans["R"][j]` | `dr/dtheta` 中 `r^j` 的系数，$R_j=\sum_{k=2}^{\min(j,d)}G_k A_{j-k}$ | `0..Nu`；`R[0]=R[1]=0` |
+| `ans["u"][n]` | 径向解中 `rho^n` 的系数；记录初始半径为 `rho` 的轨道随角度变化的高阶修正 | `1..Nu`；`u[1]=1`，`u[n](0)=0` 对 `n>=2` |
+| `ans["du"][n]` | `u[n]` 对角变量的导数；将此前的 `u` 代入径向方程后取 `rho^n` 系数，再积分得到 `u[n]` | `1..Nu`；`du[1]=0` |
+
+`ans["r_dot"]` 与 `ans["theta_dot"]` 保存上面的极坐标方程右端。`ans["r_series"]` 保存径向解到 `rho^Nu` 的截断多项式。**数学写法 `u_n(theta)` 对应程序里的表达式 `ans["u"][n]`，不是 Maple 函数；求零点值要用 `eval`，不要写 `ans["u"][n](0)`。**
+
+### 焦点量、时间密度与周期系数
+
+| 变量与访问方式 | 定义与作用 | 实际保存的下标 |
+|---|---|---|
+| `ans["g"][n]` | $g_n=u_n(2\pi)/(2\pi)$，即返回位移中 `rho^n` 系数除以 `2*Pi`；保留完整系数，不按低阶消失条件约化 | `2..Ng`；`Ng=0` 时为无条目的 `table`，不存在 `g[1]` |
+| `ans["B"][n]` | 将径向解代入 `-1/H(theta,r)` 后，按初始半径 `rho` 展开的系数；负号使常数时间密度为正 | `0..Np`；`B[0]=1` |
+| `ans["p"][n]` | $p_n=\int_0^{2\pi}B_n(\theta)\,d\theta$，组成周期或形式时间展开 | `0..Np`；`p[0]=2*Pi` |
+
+**`A` 按瞬时半径 `r` 展开，`B` 按代入径向解后的初始半径 `rho` 展开，两者不能混用。** 例如 `B[1]=-A[1]`，`B[2]=-(A[1]*u[2]+A[2])`；所以不能直接对 `A[n]` 积分来计算 `p[n]`。已独立证明为中心时，`p` 才是真实周期系数；一般焦点时是形式时间系数。
+
+`ans["time_density_series"]` 保存 `sum(B[n]*rho^n,n=0..Np)`，`ans["P_series"]` 保存 `sum(p[n]*rho^n,n=0..Np)`。这两者与 `r_series` 都是截断多项式，**对象本身不含 `O(...)`**；`Show` 显示周期摘要时会另外打印 `O(rho^(Np+1))`。
+
+### 整体、逐项与按范围查看
+
+下面代码接在第 5 节的 `ans` 计算之后。整体数组较大时 Maple 可能显示数组占位框，可用后面的 `seq` 生成列表查看：
 
 ```maple
+# 取出实际阶数和私有变量，避免猜测下标或用错角变量。
+d := ans["degree"]:
+Nu := ans["u_order"]:
+NA := ans["A_order"]:
 th := ans["theta"]:
+rr := ans["r"]:
 rh := ans["rho"]:
 
-ans["G"][2];
-ans["H"][0];
-ans["A"][1];
-ans["u"][2];
-ans["g"][3];
-ans["p"][4];
+# 查看整个数组或表。
+ans["G"]; ans["H"]; ans["A"]; ans["R"];
+ans["u"]; ans["du"]; eval(ans["g"]); ans["B"]; ans["p"];
 
-# 检查 u[2](0)=0。
-simplify(eval(ans["u"][2], th=0));
+# 逐项查看：这些指数适用于第 5 节 Ng=5、Np=4 的中心示例。
+ans["G"][2]; ans["H"][0]; ans["A"][1]; ans["R"][2];
+ans["u"][2]; ans["du"][2]; ans["g"][3]; ans["B"][2]; ans["p"][4];
 
-# 从截断周期表达式中提取 rho^4 的系数。
-coeff(ans["P_series"], rh, 4);
+# 按实际保存范围生成带下标的列表，例如 [0=...,1=...,...]。
+[seq(j=ans["G"][j],j=0..d)];
+[seq(j=ans["H"][j],j=0..d-1)];
+[seq(j=ans["A"][j],j=0..NA)];
+[seq(j=ans["R"][j],j=0..Nu)];
+[seq(n=ans["u"][n],n=1..Nu)];
+[seq(n=ans["du"][n],n=1..Nu)];
+[seq(n=ans["g"][n],n=2..ans["Ng"])];
+[seq(n=ans["B"][n],n=0..ans["Np"])];
+[seq(n=ans["p"][n],n=0..ans["Np"])];
+
+# 只查看一段已计算的 u；按需要改变 lo、hi。
+lo := 2: hi := min(4,Nu):
+[seq(n=ans["u"][n],n=lo..hi)];
 ```
 
-如果暂时只想核对极坐标化结果，可以跳过后续计算：
+只访问已经保存的下标：`Np=4` 时不能读取 `p[6]`；纯线性系统 `d=1` 时只有 `G[0]`、`G[1]` 和 `H[0]`，没有 `G[2]` 或 `H[1]`。`Ng=0` 时上面的焦点量列表为 `[]`；`Nu=1` 时 `2..Nu` 范围也为空，仍有 `u[1]=1`。`g` 是 `table`，用 `eval(ans["g"])` 查看整张表；读取未计算的 `g[n]` 可能只留下符号，不能把它理解为零。其他系数使用 `Array`，超出保存范围会报下标错误。
+
+### 角度、初值、返回值与系数核对
 
 ```maple
-polar := FocusPeriod:-PolarData(X, Y, x, y):
-polar["G"][2];
-polar["H"][0];
-polar["r_dot"];
-polar["theta_dot"];
+# 以下仍以 Ng=5、Np=4 的中心示例为准。
+eval(ans["G"][2],th=Pi/2);               # G[2] 在指定角度的值。
+simplify(eval(ans["u"][2],th=0));       # 初值为 0。
+simplify(eval(ans["r_series"],th=0)-rh); # r(0,rho)=rho。
+eval(ans["u"][3],th=2*Pi);              # 返回值，等于 2*Pi*g[3]。
+simplify(eval(ans["u"][3],th=2*Pi)/(2*Pi)-ans["g"][3]);
+
+# 参数可以与角度一起代入，不要把全局 theta 当作私有角变量。
+eval(ans["u"][2],{a=1,b=2,th=Pi});
+eval(ans["p"][4],{a=1,b=2});
+eval(ans["P_series"],{a=1,b=2});
+
+# 提取截断多项式系数，核对它们与数组条目一致。
+simplify(coeff(ans["r_series"],rh,2)-ans["u"][2]);
+simplify(coeff(ans["time_density_series"],rh,2)-ans["B"][2]);
+simplify(coeff(ans["P_series"],rh,4)-ans["p"][4]);
+simplify(coeff(ans["theta_dot"],rr,0)-ans["H"][0]);
 ```
+
+只需要极坐标结果时，可用 `PolarData` 跳过全部递推：
+
+```maple
+polar_data := FocusPeriod:-PolarData(X,Y,x,y):
+polar_data["G"]; polar_data["H"]; polar_data["H0"];
+polar_data["r_dot"]; polar_data["theta_dot"];
+```
+
+`polar_data` 仅有 `degree`、`G`、`H`、`H0`、`r_dot`、`theta_dot`、`theta`、`r`、`rho` 这九个键，不能从它查看 `A`、`u`、`g` 或 `p`；这些量需调用 `Compute` 才会生成。变量名采用 `polar_data`，避免给 Maple 的受保护名字 `polar` 赋值。
 
 ## 7. 高阶计算前需要注意什么？
 
@@ -367,6 +456,7 @@ Maple_Focus_Period/
 ├─ examples/
 │  ├─ 01_center.mpl
 │  ├─ 02_focus.mpl
+│  ├─ 03_inspect.mpl
 │  ├─ user_system.mpl
 │  └─ FocusPeriod_Worksheet.mw
 ├─ tests/
@@ -397,7 +487,7 @@ read "tests/verify_maple.mpl";
 
 ```maple
 FocusPeriod:-Version();
-# v1.0.1 对应返回字符串 "1.0.1"。
+# v1.0.2 对应返回字符串 "1.0.2"。
 ```
 
 仓库中的 [VERSION](VERSION) 保存版本号，[CHANGELOG.md](CHANGELOG.md) 记录每个版本的具体改动、接口变化和验证情况。固定版本标签便于今后复现同一组结果。
