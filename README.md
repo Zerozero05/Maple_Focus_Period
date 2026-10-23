@@ -6,6 +6,8 @@
 
 当前源码：**v1.1.0 开发候选，尚未发布**；现有公开发行版和单文件附件仍为 **v1.0.1**。本轮深度优化说明更新于 **2026-10-24**。旧版已有 Maple 2025.1 验证；候选版的分项与集成验证结果见[验证记录](docs/validation.md)，其他 Maple 版本尚未逐一测试。
 
+审阅阶段的候选位于 [codex/deep-optimization 分支](https://github.com/Zerozero05/Maple_Focus_Period/tree/codex/deep-optimization)，见[草稿 PR #1](https://github.com/Zerozero05/Maple_Focus_Period/pull/1)。试用新功能时可直接下载[候选单文件](https://github.com/Zerozero05/Maple_Focus_Period/raw/refs/heads/codex/deep-optimization/src/focus_period.mpl)；需要完整项目时，先切换到上述候选分支，再点 **Code → Download ZIP**。`main` 与 v1.0.1 正式附件目前不含新增研究接口。
+
 **Windows 路径在 Maple 字符串中推荐使用正斜杠 `/`；使用反斜杠时，每个分隔符要写成 `\\`。红色的一维 Maple Input 可以直接执行。** 下载和路径示例见下面第 2 节。
 
 [GitHub 仓库](https://github.com/Zerozero05/Maple_Focus_Period) · [数学说明](docs/mathematics.md) · [高级用法](docs/advanced_usage.md) · [验证记录](docs/validation.md)
@@ -108,7 +110,7 @@ FocusPeriod:-Show(ans);
 使用 `.mw` 工作表和现成示例时，下载整个项目，保留它们与主程序的相对路径。
 
 1. 打开 [GitHub 仓库](https://github.com/Zerozero05/Maple_Focus_Period)。
-2. 获取固定版本时，打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载 **Source code (zip)**；获取当前开发版时，点击 **Code → Download ZIP**。
+2. 获取固定版本时，打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载 **Source code (zip)**；试用本轮候选时，先切换到 `codex/deep-optimization` 分支，再点击 **Code → Download ZIP**。
 3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.0.1`，当前开发版通常名为 `Maple_Focus_Period-main`。
 4. 将解压后的项目文件夹改名为 `Maple_Focus_Period`，放到自己方便使用的位置。
 
