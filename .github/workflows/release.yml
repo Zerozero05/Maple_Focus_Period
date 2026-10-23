@@ -1,0 +1,56 @@
+name: Publish confirmed v1.1.0
+
+# 用户已明确确认本次 v1.1.0。仅该标签触发，不自动批准任何后续版本。
+# 使用 GitHub 托管 runner 的内置 gh；不读取本机账号凭据。
+on:
+  push:
+    tags:
+      - v1.1.0
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-confirmed-v1.1.0
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'Zerozero05/Maple_Focus_Period' && github.ref == 'refs/tags/v1.1.0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Prepare the confirmed source and three assets
+        run: python3 tools/prepare_release.py "$RUNNER_TEMP/release-assets"
+      - name: Create draft, verify uploaded bytes, then publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          assets="$RUNNER_TEMP/release-assets"
+          gh release create v1.1.0 \
+            "$assets/focus_period.mpl" "$assets/快速使用.txt" "$assets/SHA256SUMS.txt" \
+            --draft --verify-tag --title v1.1.0 --notes-file "$assets/release-body.md"
+          gh api "repos/$GH_REPO/releases/tags/v1.1.0" > "$RUNNER_TEMP/release-info.json"
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          temp = Path(os.environ["RUNNER_TEMP"])
+          release = json.loads((temp / "release-info.json").read_text())
+          assert release["draft"] and release["name"] == release["tag_name"] == "v1.1.0"
+          expected = {"focus_period.mpl", "快速使用.txt", "SHA256SUMS.txt"}
+          assert {a["name"] for a in release["assets"]} == expected
+          for asset in release["assets"]:
+              local = (temp / "release-assets" / asset["name"]).read_bytes()
+              assert asset["size"] == len(local)
+              assert asset["digest"] == "sha256:" + hashlib.sha256(local).hexdigest()
+          print("DRAFT VERIFIED: title, version, asset names, sizes and SHA256 digests")
+          PY
+          gh release edit v1.1.0 --draft=false --latest
+          gh release view v1.1.0 --json url,name,tagName,isDraft,isPrerelease

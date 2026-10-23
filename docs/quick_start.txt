@@ -1,0 +1,63 @@
+Maple_Focus_Period v1.1.0 快速使用
+
+一、只下载一个文件即可运行
+发行页：https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.1.0
+下载附件 focus_period.mpl，保存到自己选择的位置。运行只依赖 Maple 内置功能，
+无需 Python，也不需要下载项目内的 src、examples、tests 或 docs 文件夹。
+需要示例及原生 .mw 工作表时，再下载发布页的 Source code (zip)。
+
+二、在 Maple 可执行输入区运行（请修改 read 的实际路径）
+restart:
+read "D:/Maple/focus_period.mpl":
+FocusPeriod:-Version();  # 应显示 "1.1.0"
+
+X := (1+b*x)*(y+a*x*y):
+Y := (1+b*x)*(-x+a*y^2):
+ans := FocusPeriod:-Compute(X,Y,x,y,5,4):
+FocusPeriod:-Show(ans);
+
+最后两个数字分别是焦点量 g 和周期系数 p 的最高指数；可以分别修改。
+Ng=0 关闭 g；Ng>=2 时计算 g[2]..g[Ng]。Np=0 仅保留 p[0]=2*Pi。
+本示例 g[2]..g[5] 全为0，p[2]=Pi*b*(b-a)，p[3]=-2*Pi*a*b*(b-a)。
+换自己的模型时，只修改 X、Y 和阶数；x、y 和待保留的参数应保持未赋值。
+
+三、避免 Windows 路径与输入格式错误
+推荐正斜杠 /，例如 D:/Maple/focus_period.mpl。
+如使用反斜杠，每个分隔符必须写两次，例如 D:\\Maple\\focus_period.mpl。
+不要将文件管理器的单反斜杠路径直接粘入 Maple 字符串。
+先解决 currentdir/read 的第一个错误，再调用 FocusPeriod；后续“不是模块”通常是加载失败。
+红色的一维 Maple Input 可直接执行，无须转换为二维数学公式；普通文字区不执行。
+替换磁盘文件后，须 restart 并重新 read；已加载的模块不会自动更新。
+下载整个项目时，repoRoot 必须直接包含 src、examples 等目录，注意不要多套一层解压目录。
+
+四、查看关键变量
+ans["G"][2]; ans["H"][0]; ans["A"][1]; ans["R"][2];
+ans["u"][3]; ans["du"][3]; ans["B"][2];
+ans["g"][3]; ans["p"][2]; ans["P_series"];
+th := ans["theta"]:
+eval(ans["u"][2],th=0);  # 应为0
+
+G/H：原始极坐标方程的系数；A：角速度倒数；R：dr/dtheta 的系数。
+u/du：径向解及其角导数；B：代入径向解后取负的时间密度；p：B 的整周积分。
+不能用直接积分 A[n] 代替 p[n]。内部角变量必须从 ans["theta"] 获取后再代入。
+
+五、可选研究接口（本中心示例可直接运行）
+certificate := FocusPeriod:-CenterCertificate(ans):
+certificate["status"]; certificate["assumptions"];
+half_data := FocusPeriod:-HalfReturn(ans):
+half_data["composition_residual"];
+period_data := FocusPeriod:-CenterPeriod(ans):
+period_data["tau"][1]; period_data["tau"][2]; period_data["odd_residual"];
+
+默认 direct 内核；可用 method="quotient" 比较另一计算路径。
+compact=true 会缩减中间阶数，查询前先看 ans["u_order"]。
+详细参数条件、参数局部展开、自然振幅及独立笛卡尔内核见 docs/advanced_usage.md：
+https://github.com/Zerozero05/Maple_Focus_Period/blob/v1.1.0/docs/advanced_usage.md
+
+六、数学约定与验证范围
+线性矩阵固定为 [[0,1],[-1,0]]；x=r*cos(theta), y=r*sin(theta)，H[0]=-1。
+g[n]=u[n](2*Pi)/(2*Pi)，n>=2，保留完整返回系数。
+P=-int(1/H,theta=0..2*Pi)，故 p[0]=2*Pi。中心外仅是形式时间展开。
+有限 g 消失不能证明中心；临界周期截断根不是实际临界周期的自动证明。
+已在 Maple 2025.1 / Windows64 验证，六套共587项检查；其他 Maple 版本未逐一测试。
+原六参数调用与默认中间量范围保留，原 v1.0.1 文件仍可用于基础接口。

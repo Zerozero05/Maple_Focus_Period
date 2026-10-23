@@ -4,9 +4,9 @@
 
 计算过程中的 `G`、`H`、`A`、`R`、`u`、`du`、`B` 等中间量全部保存在结果表 `ans` 中，便于核对公式和分析模型。第 6 节逐一解释它们的含义、下标范围与查看代码。
 
-当前源码：**v1.1.0 开发候选，尚未发布**；现有公开发行版和单文件附件仍为 **v1.0.1**。本轮深度优化说明更新于 **2026-10-24**。旧版已有 Maple 2025.1 验证；候选版的分项与集成验证结果见[验证记录](docs/validation.md)，其他 Maple 版本尚未逐一测试。
+当前正式版本：**[v1.1.0](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.1.0)**，发布于 **2026-10-24**。已在 Maple 2025.1 完成分项与集成验证，结果见[验证记录](docs/validation.md)；其他 Maple 版本尚未逐一测试。
 
-审阅阶段的候选位于 [codex/deep-optimization 分支](https://github.com/Zerozero05/Maple_Focus_Period/tree/codex/deep-optimization)，见[草稿 PR #1](https://github.com/Zerozero05/Maple_Focus_Period/pull/1)。试用新功能时可直接下载[候选单文件](https://github.com/Zerozero05/Maple_Focus_Period/raw/refs/heads/codex/deep-optimization/src/focus_period.mpl)；需要完整项目时，先切换到上述候选分支，再点 **Code → Download ZIP**。`main` 与 v1.0.1 正式附件目前不含新增研究接口。
+只运行程序时，下载发行附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.1.0/focus_period.mpl) 即可；可配合[快速使用说明](docs/quick_start.txt)和发行版内的 `SHA256SUMS.txt`。需要示例、原生 `.mw` 工作表与测试时，下载发布页的 **Source code (zip)**。开发与审阅过程见 [PR #1](https://github.com/Zerozero05/Maple_Focus_Period/pull/1)。
 
 **Windows 路径在 Maple 字符串中推荐使用正斜杠 `/`；使用反斜杠时，每个分隔符要写成 `\\`。红色的一维 Maple Input 可以直接执行。** 下载和路径示例见下面第 2 节。
 
@@ -18,7 +18,7 @@
 | 先运行已验证的示例，确认环境正常 | [中心示例与工作表步骤](#4-第一次运行先算一个中心示例) |
 | 输入自己的系统，指定两类计算阶数 | [系统输入与阶数设置](#5-改成自己的系统) |
 | 理解和查看 `G`、`H`、`A`、`u` 等变量 | [关键变量表与查询代码](#6-查看结果和中间量) |
-| 比较计算内核、分析参数条件、半周图与临界周期候选 | [v1.1.0 候选高级用法](docs/advanced_usage.md) |
+| 比较计算内核、分析参数条件、半周图与临界周期候选 | [v1.1.0 高级用法](docs/advanced_usage.md) |
 | 处理路径、加载或参数方面的报错 | [常见问题](#8-常见问题) |
 
 <a id="更新日志"></a>
@@ -27,7 +27,7 @@
 
 | 版本／更新 | 日期 | 主要变更 |
 |---|---|---|
-| v1.1.0 开发候选，未发布 | 2026-10-24 | 1、增加直接递推、次数支撑、共同轨道因子与参数局部展开。<br>2、增加参数条件、中心充分条件、半周与正时间返回图、自然振幅周期分析及独立笛卡尔内核。<br>3、保留六参数调用、原始焦点量和默认中间量范围，提供高级查询说明。[本次完整记录](CHANGELOG.md#v110-unreleased) |
+| v1.1.0 | 2026-10-24 | 1、增加直接递推、次数支撑、共同轨道因子与参数局部展开。<br>2、增加参数条件、中心充分条件、半周与正时间返回图、自然振幅周期分析及独立笛卡尔内核。<br>3、保留六参数调用和默认中间量范围，发布单文件、快速使用及校验附件。[本次完整记录](CHANGELOG.md#v1-1-0) |
 | 文档整理（未发版） | 2026-10-20 | 1、整理：增加全部更新摘要、单次详情与完整历史入口。<br>2、优化：合并重复维护说明，保留使用、数学和验证信息。[本次完整记录](CHANGELOG.md#docs-20261020) |
 | 文档整理，未发版 | 2026-10-10 | 1、完善关键变量与下标查询。<br>2、增加查询示例和路径排错，继续沿用 v1.0.1。<br>3、按用户要求撤下 v1.0.2，确立发布前确认规则。[本次完整记录](CHANGELOG.md#docs-20261010) |
 | v1.0.1 | 2026-10-05 | 1、补充 Windows 路径和一维 Maple 输入提示。<br>2、更新工作表及单文件快速使用说明。[本次完整记录](CHANGELOG.md#v101) |
@@ -85,17 +85,17 @@ $$
 ### 只下载一个主程序文件
 
 只调用核心程序时，只需下载单个 `focus_period.mpl`，不依赖 `src`、`examples`、`tests` 或 `docs` 文件夹。
-打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.0.1/focus_period.mpl)。
+打开 [v1.1.0 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.1.0)，下载附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.1.0/focus_period.mpl)。
 
-**这个已发布附件仍是 v1.0.1，支持本文基础计算及变量查询；它不包含 v1.1.0 候选的新增接口与关键字。** 使用[高级用法](docs/advanced_usage.md)前，请先加载对应候选源码，并通过 `FocusPeriod:-Version()` 确认版本。新发行版与新版附件须经用户确认后才会公开。
+v1.1.0 同时支持本文基础计算、变量查询和[高级用法](docs/advanced_usage.md)。加载后通过 `FocusPeriod:-Version()` 确认显示 `"1.1.0"`。已有 v1.0.1 文件仍可调用原六参数接口，但使用新增功能前应更新主程序，执行 `restart` 并重新 `read`。
 
-假设文件保存在 `C:/Maple/focus_period.mpl`，在 Maple 的可执行输入区运行以下语句；将 `read` 中的绝对路径换成自己文件的位置：
+假设文件保存在 `D:/Maple/focus_period.mpl`，在 Maple 的可执行输入区运行以下语句；将 `read` 中的绝对路径换成自己文件的位置：
 
 ```maple
 restart:
-read "C:/Maple/focus_period.mpl":
+read "D:/Maple/focus_period.mpl":
 FocusPeriod:-Version();
-# v1.0.1 返回 "1.0.1"。
+# 应返回 "1.1.0"。
 
 X := (1+b*x)*(y+a*x*y):
 Y := (1+b*x)*(-x+a*y^2):
@@ -110,11 +110,11 @@ FocusPeriod:-Show(ans);
 使用 `.mw` 工作表和现成示例时，下载整个项目，保留它们与主程序的相对路径。
 
 1. 打开 [GitHub 仓库](https://github.com/Zerozero05/Maple_Focus_Period)。
-2. 获取固定版本时，打开 [v1.0.1 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.0.1)，下载 **Source code (zip)**；试用本轮候选时，先切换到 `codex/deep-optimization` 分支，再点击 **Code → Download ZIP**。
-3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.0.1`，当前开发版通常名为 `Maple_Focus_Period-main`。
+2. 获取固定版本时，打开 [v1.1.0 发布页](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.1.0)，下载 **Source code (zip)**；获取当前开发源码时，点击 **Code → Download ZIP**。
+3. 解压。版本包的文件夹通常名为 `Maple_Focus_Period-1.1.0`，当前开发版通常名为 `Maple_Focus_Period-main`。
 4. 将解压后的项目文件夹改名为 `Maple_Focus_Period`，放到自己方便使用的位置。
 
-固定发行版的源码包保留发布时的原样。主分支源码与已发布附件可能版本不同，加载后以 `FocusPeriod:-Version()` 为准。`01_center.mpl`、`02_focus.mpl`、`03_inspect.mpl` 的基础六参数调用也可使用 v1.0.1；候选新增功能需使用候选主程序。
+固定发行版的源码包保留发布时的原样。后续主分支源码与已发布附件可能版本不同，加载后以 `FocusPeriod:-Version()` 为准。`01_center.mpl`、`02_focus.mpl`、`03_inspect.mpl` 的基础六参数调用也可使用 v1.0.1；新增功能需使用 v1.1.0 或兼容的后续版本。
 
 以下说明统一假设项目保存在：
 
@@ -221,7 +221,7 @@ read "examples/02_focus.mpl";
 
 1. 保留整个项目文件夹，在 Maple 中打开 `examples/FocusPeriod_Worksheet.mw`。
 2. 在第一个可执行输入块中，将 `repoRoot` 改为自己的项目根目录，例如 `"D:/Maple/Maple_Focus_Period"`；使用 `/`，或将每个反斜杠写成 `\\`。该目录内应直接有 `src/focus_period.mpl`。
-3. 按 Enter 执行第一个红色的一维输入块，确认显示预期版本后，再从上到下执行其余输入块：已发布附件为 `"1.0.1"`，本轮候选源码为 `"1.1.0"`。如果先出现目录或文件错误，修正路径并重新执行加载块。
+3. 按 Enter 执行第一个红色的一维输入块，确认显示 `"1.1.0"` 后，再从上到下执行其余输入块。如果仍显示 `"1.0.1"`，检查是否读入了旧文件；如果先出现目录或文件错误，修正路径并重新执行加载块。
 4. 分析自己的模型时，修改工作表中的 `X`、`Y`、`Ng`、`Np`；建议另存到项目根目录下自建的 `models` 文件夹。
 5. 修改路径或系统后保存工作表；标题旁的 `*` 表示有尚未保存的修改。工作表默认使用已验证的中心示例，核心算法始终来自 `src/focus_period.mpl`，不需要把算法代码粘进工作表。
 
@@ -268,9 +268,9 @@ FocusPeriod:-Show(only_p);
 
 只算周期系数仍然需要部分径向解系数 `u[n]`；程序会自动计算所需中间量。
 
-### v1.1.0 候选的可选计算设置
+### v1.1.0 的可选计算设置
 
-原来的六个位置参数继续有效。候选源码另外支持以下关键字，默认值为：
+原来的六个位置参数继续有效。v1.1.0 另外支持以下关键字，默认值为：
 
 ```maple
 ans := FocusPeriod:-Compute(X,Y,x,y,5,4,
@@ -331,7 +331,7 @@ simplify(ans["p"][2]) assuming a>0, b>a;
 | `d = ans["degree"]` | `X`、`Y` 关于状态变量的最高总次数，包含线性项，因此 `d>=1` |
 | `Ng = ans["Ng"]` | 请求的焦点量最高指数；`0` 表示关闭，其他允许值为不小于 `2` 的整数 |
 | `Np = ans["Np"]` | 请求的周期系数最高指数；非负整数 |
-| `Nu = ans["u_order"]` | 实际保存的径向解阶数；默认 `Nu=max(1,Ng,Np)`。候选版 `compact=true` 时可能更小 |
+| `Nu = ans["u_order"]` | 实际保存的径向解阶数；默认 `Nu=max(1,Ng,Np)`。显式设置 `compact=true` 时可能更小 |
 | `NA = ans["A_order"]` | 实际倒数展开阶数，`NA=max(0,Np,Nu-2)` |
 | `ans["theta"]` | 角变量；真实正时间方向为角度递减，程序仍按 `0..2*Pi` 计算 `g` |
 | `ans["r"]` | 极坐标中的瞬时半径，出现在 `r_dot`、`theta_dot` 与倒数的 `r` 展开中 |
@@ -365,7 +365,7 @@ $$
 
 `ans["r_dot"]` 与 `ans["theta_dot"]` 保存上面的极坐标方程右端。`ans["r_series"]` 保存径向解到 `rho^Nu` 的截断多项式。**数学写法 `u_n(theta)` 对应程序里的表达式 `ans["u"][n]`，不是 Maple 函数；求零点值要用 `eval`，不要写 `ans["u"][n](0)`。**
 
-候选版即使启用了共同因子简化，以上 `G/H/A/R` 仍对应原始系统。简化轨道专用的量另外放在 `ans["orbit_factor"]`、`ans["orbit_G"]`、`ans["orbit_H"]`；可证明的次数支撑见 `ans["structure"]`、`ans["orbit_structure"]`。新增记录与分析返回值见[高级用法](docs/advanced_usage.md)，不会覆盖原始 `g/p`。
+即使启用了共同因子简化，以上 `G/H/A/R` 仍对应原始系统。简化轨道专用的量另外放在 `ans["orbit_factor"]`、`ans["orbit_G"]`、`ans["orbit_H"]`；可证明的次数支撑见 `ans["structure"]`、`ans["orbit_structure"]`。新增记录与分析返回值见[高级用法](docs/advanced_usage.md)，不会覆盖原始 `g/p`。
 
 ### 焦点量、时间密度与周期系数
 
@@ -458,7 +458,7 @@ polar_data["r_dot"]; polar_data["theta_dot"];
 
 主程序采用截断多项式运算，只生成所需的幂次，但不保证任意高阶多参数系统都能在短时间内完成。若 Maple 无法求出某一步积分，程序会明确报错并停止，不把未求出的积分当作已计算系数。
 
-候选版提供两条内核及次数、因子优化，实际速度仍取决于模型。先用低阶结果对照，再提高阶数；如果研究的是某个参数点附近的变化，可用 `ParameterJet` 直接求指定方向的低阶参数展开，避免生成完整多参数通式。
+v1.1.0 提供两条内核及次数、因子优化，实际速度仍取决于模型。先用低阶结果对照，再提高阶数；如果研究的是某个参数点附近的变化，可用 `ParameterJet` 直接求指定方向的低阶参数展开，避免生成完整多参数通式。
 
 程序中的 `g[n]` 保留完整返回映射系数，不自动施加前面各阶焦点量为零的条件。因此高阶结果可能含低阶系数的乘积；例如焦点示例的 `g[5]=a*b+3*Pi*a^2`。它们并非已经按低阶消失条件约化的 Lyapunov 常数。
 
@@ -536,7 +536,7 @@ read "tests/verify_maple.mpl";
 
 成功时最后会显示 `PASS` 及检查数量。验证覆盖解析中心、非中心径向示例、论文的完整 `p2` 公式、计算阶数选择、线性及高次输入、符号隔离和错误输入拒绝。实际运行环境和结果见 [docs/validation.md](docs/validation.md)。
 
-候选版还提供内核对照与隐式方程残差、参数条件与局部展开、中心充分条件及研究接口的专项测试。具体命令、已执行项目与局限统一记录在验证说明中，不将独立脚本存在当作集成验证已经完成。
+v1.1.0 还提供内核对照与隐式方程残差、参数条件与局部展开、中心充分条件及研究接口的专项测试。具体命令、已执行项目与局限统一记录在验证说明中，不将独立脚本存在当作集成验证已经完成。
 
 ## 10. 版本和后续更新
 
@@ -544,7 +544,7 @@ read "tests/verify_maple.mpl";
 
 ```maple
 FocusPeriod:-Version();
-# 已发布 v1.0.1 返回 "1.0.1"；本轮未发布候选返回 "1.1.0"。
+# 当前 v1.1.0 返回 "1.1.0"。
 ```
 
 仓库中的 [VERSION](VERSION) 保存版本号，[CHANGELOG.md](CHANGELOG.md) 记录每个版本的具体改动、接口变化和验证情况。固定版本标签便于今后复现同一组结果。

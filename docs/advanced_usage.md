@@ -1,10 +1,10 @@
-# v1.1.0 候选高级用法
+# v1.1.0 高级用法
 
-本文对应 **v1.1.0 开发候选，尚未发布**。现有公开发行版及其单文件 `focus_period.mpl` 仍为 v1.0.1，不能运行本文新增的接口或关键字。所有新功能仍在同一个 `src/focus_period.mpl` 中，只需加载该文件；没有新增运行依赖。
+本文对应 **v1.1.0**。下载 [v1.1.0 发行版](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.1.0)的单文件 `focus_period.mpl` 即可使用全部接口；v1.0.1 不含本文新增的接口或关键字。所有新功能仍在同一个 `src/focus_period.mpl` 中，只需加载该文件；没有新增运行依赖。
 
 路径、首次加载、旧变量及全部下标查询见 [README](../README.md)。实际验证范围见[验证记录](validation.md)，公式与方向约定见[数学说明](mathematics.md)。发布新版本须另外取得用户确认。
 
-当前试用源码须从 `codex/deep-optimization` 候选分支取得，下载入口见 [README](../README.md)。审阅期间主分支和现有发行版仍为旧版，不能以旧文件执行本文新接口。
+下载与 Windows 路径防错见 [README](../README.md)和[快速使用](quick_start.txt)。替换旧文件后须执行 `restart` 并重新 `read`；已加载的模块不会随磁盘文件自动更新。
 
 ## 1. 加载与接口速查
 
@@ -14,7 +14,7 @@
 restart:
 currentdir("D:/Maple/Maple_Focus_Period"):
 read "src/focus_period.mpl":
-FocusPeriod:-Version();  # 本文候选源码应显示 "1.1.0"。
+FocusPeriod:-Version();  # 本文对应版本应显示 "1.1.0"。
 
 X := (1+b*x)*(y+a*x*y):
 Y := (1+b*x)*(-x+a*y^2):
