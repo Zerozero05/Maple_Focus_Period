@@ -65,6 +65,23 @@ def recurrence(radial, angular, radius_coefficients, order=5, period_order=4):
     time_coefficients = [sp.expand(-sum(A[j] * powers[j][n]
                                        for j in range(n + 1)))
                          for n in range(period_order + 1)]
+    # Independently check the direct implicit recurrence against the supplied
+    # exact radius, rather than comparing two translations of Maple code.
+    for n in range(2, order + 1):
+        lhs = H[0] * sp.diff(radius_coefficients[n], theta)
+        lhs += sum(H[j] * sp.diff(radius_coefficients[k], theta)
+                   * powers[j][n - k]
+                   for j in range(1, h_degree + 1)
+                   for k in range(2, n))
+        rhs = sum(G[j] * powers[j][n] for j in G)
+        equal(lhs, rhs)
+    composed_h = [sum(H[j] * powers[j][n]
+                      for j in range(h_degree + 1))
+                  for n in range(period_order + 1)]
+    equal(H[0] * time_coefficients[0], -1)
+    for n in range(1, period_order + 1):
+        equal(sum(composed_h[j] * time_coefficients[n - j]
+                  for j in range(n + 1)), 0)
     return A, R, time_coefficients
 
 
@@ -172,8 +189,38 @@ def check_zhang_p2():
     print("ZHANG a1-only: p2=Pi*a1^2/3")
 
 
+def check_return_geometry():
+    """Exact center half-map, amplitude parity and nonlinear inverse map."""
+    amplitude = sp.Symbol("amplitude")
+    half = rho / (1 + 2*a*rho)
+    signed_half = -half
+    equal(signed_half.subs(rho, signed_half), rho)
+    transform = sp.cancel((rho - signed_half)/2)
+    equal(transform.subs(rho, signed_half), -transform)
+    inverse = amplitude
+    for n in range(2, 5):
+        coefficient = sp.series(transform.subs(rho, inverse), amplitude,
+                                0, n + 1).removeO().expand().coeff(amplitude, n)
+        inverse -= coefficient*amplitude**n
+    p2 = sp.pi*b*(b-a)
+    p3 = -2*a*p2
+    p4 = sp.Rational(3, 4)*p2*(b*b-2*a*b+5*a*a)
+    natural = sp.series((2*sp.pi+p2*rho**2+p3*rho**3+p4*rho**4)
+                        .subs(rho, inverse), amplitude, 0, 5).removeO().expand()
+    equal(natural.coeff(amplitude, 3), 0)
+    equal(natural.coeff(amplitude, 4),
+          p2*(3*b*b-6*a*b-5*a*a)/4)
+    c3, c5 = sp.symbols("c3 c5")
+    backward = rho+c3*rho**3+c5*rho**5
+    forward = rho-c3*rho**3+(3*c3*c3-c5)*rho**5
+    equal(sp.series(backward.subs(rho, forward)-rho,
+                    rho, 0, 6).removeO(), 0)
+    print("GEOMETRY: exact half-map involution, amplitude parity and inverse agree")
+
+
 if __name__ == "__main__":
     check_focus()
     check_exact_center()
     check_zhang_p2()
+    check_return_geometry()
     print("All independent symbolic checks passed.")
