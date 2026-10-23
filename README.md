@@ -6,7 +6,7 @@
 
 当前正式版本：**[v1.1.0](https://github.com/Zerozero05/Maple_Focus_Period/releases/tag/v1.1.0)**，发布于 **2026-10-24**。已在 Maple 2025.1 完成分项与集成验证，结果见[验证记录](docs/validation.md)；其他 Maple 版本尚未逐一测试。
 
-只运行程序时，下载发行附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.1.0/focus_period.mpl) 即可；可配合[快速使用说明](docs/quick_start.txt)和发行版内的 `SHA256SUMS.txt`。需要示例、原生 `.mw` 工作表与测试时，下载发布页的 **Source code (zip)**。开发与审阅过程见 [PR #1](https://github.com/Zerozero05/Maple_Focus_Period/pull/1)。
+只运行程序时，下载发行附件 [focus_period.mpl](https://github.com/Zerozero05/Maple_Focus_Period/releases/download/v1.1.0/focus_period.mpl) 即可；可配合[快速使用说明](docs/quick_start.txt)及发行版内的 `QUICK_START.txt`、`SHA256SUMS.txt`。需要示例、原生 `.mw` 工作表与测试时，下载发布页的 **Source code (zip)**。开发与审阅过程见 [PR #1](https://github.com/Zerozero05/Maple_Focus_Period/pull/1)。
 
 **Windows 路径在 Maple 字符串中推荐使用正斜杠 `/`；使用反斜杠时，每个分隔符要写成 `\\`。红色的一维 Maple Input 可以直接执行。** 下载和路径示例见下面第 2 节。
 
@@ -27,7 +27,7 @@
 
 | 版本／更新 | 日期 | 主要变更 |
 |---|---|---|
-| v1.1.0 | 2026-10-24 | 1、增加直接递推、次数支撑、共同轨道因子与参数局部展开。<br>2、增加参数条件、中心充分条件、半周与正时间返回图、自然振幅周期分析及独立笛卡尔内核。<br>3、保留六参数调用和默认中间量范围，发布单文件、快速使用及校验附件，完善草稿核验与恢复。[本次完整记录](CHANGELOG.md#v1-1-0) |
+| v1.1.0 | 2026-10-24 | 1、增加直接递推、次数支撑、共同轨道因子与参数局部展开。<br>2、增加参数条件、中心充分条件、半周与正时间返回图、自然振幅周期分析及独立笛卡尔内核。<br>3、保留六参数调用和默认中间量范围，发布单文件、QUICK_START与校验附件，完善草稿核验与恢复。[本次完整记录](CHANGELOG.md#v1-1-0) |
 | 文档整理（未发版） | 2026-10-20 | 1、整理：增加全部更新摘要、单次详情与完整历史入口。<br>2、优化：合并重复维护说明，保留使用、数学和验证信息。[本次完整记录](CHANGELOG.md#docs-20261020) |
 | 文档整理，未发版 | 2026-10-10 | 1、完善关键变量与下标查询。<br>2、增加查询示例和路径排错，继续沿用 v1.0.1。<br>3、按用户要求撤下 v1.0.2，确立发布前确认规则。[本次完整记录](CHANGELOG.md#docs-20261010) |
 | v1.0.1 | 2026-10-05 | 1、补充 Windows 路径和一维 Maple 输入提示。<br>2、更新工作表及单文件快速使用说明。[本次完整记录](CHANGELOG.md#v101) |

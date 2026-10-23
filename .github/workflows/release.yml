@@ -35,6 +35,20 @@ jobs:
         run: |
           test "$(git rev-parse HEAD)" = db06a775d1f1965f1b535b8884954c8cb29c4fb4
           python3 tools/prepare_release.py "$RUNNER_TEMP/release-assets"
+          # 固定标签内是初始打包脚本；只规范化附件名，不改变源码或指南正文。
+          python3 - <<'PY'
+          import hashlib
+          import os
+          from pathlib import Path
+
+          assets = Path(os.environ["RUNNER_TEMP"]) / "release-assets"
+          (assets / "快速使用.txt").rename(assets / "QUICK_START.txt")
+          names = ("focus_period.mpl", "QUICK_START.txt")
+          sums = "".join(f"{hashlib.sha256((assets / n).read_bytes()).hexdigest()}  {n}\n" for n in names)
+          (assets / "SHA256SUMS.txt").write_bytes(sums.encode("utf-8"))
+          notes = assets / "release-body.md"
+          notes.write_bytes(notes.read_bytes().replace("快速使用.txt".encode(), b"QUICK_START.txt"))
+          PY
       - name: Create draft, verify uploaded bytes, then publish
         env:
           GH_TOKEN: ${{ github.token }}
@@ -62,7 +76,7 @@ jobs:
           fi
           if [ "$state" = missing ]; then
             gh release create v1.1.0 \
-              "$assets/focus_period.mpl" "$assets/快速使用.txt" "$assets/SHA256SUMS.txt" \
+              "$assets/focus_period.mpl" "$assets/QUICK_START.txt" "$assets/SHA256SUMS.txt" \
               --draft --verify-tag --title v1.1.0 --notes-file "$assets/release-body.md"
           fi
           gh api "repos/$GH_REPO/releases?per_page=100" > "$RUNNER_TEMP/releases.json"
@@ -70,6 +84,7 @@ jobs:
           import hashlib
           import json
           import os
+          import subprocess
           from pathlib import Path
 
           temp = Path(os.environ["RUNNER_TEMP"])
@@ -78,13 +93,33 @@ jobs:
           assert len(matches) == 1
           release = matches[0]
           assert release["draft"] and release["name"] == release["tag_name"] == "v1.1.0"
-          expected = {"focus_period.mpl", "快速使用.txt", "SHA256SUMS.txt"}
-          assert {a["name"] for a in release["assets"]} == expected
+          print("Existing draft assets:", [(a["name"], a["size"], a["digest"]) for a in release["assets"]])
+          assert len(release["assets"]) == 3
+          # GitHub 会规范化非ASCII附件名；只在核对原字节后修正本草稿的指南名和校验清单。
+          guide_digest = "sha256:" + hashlib.sha256((temp / "release-assets/QUICK_START.txt").read_bytes()).hexdigest()
+          guide = [a for a in release["assets"] if a["digest"] == guide_digest]
+          assert len(guide) == 1, "The original quick guide bytes do not match"
+          if guide[0]["name"] != "QUICK_START.txt":
+              subprocess.run(["gh", "api", "--method", "PATCH",
+                              f"repos/{os.environ['GH_REPO']}/releases/assets/{guide[0]['id']}",
+                              "-f", "name=QUICK_START.txt", "-f", "label=快速使用说明"], check=True, stdout=subprocess.DEVNULL)
+          checksum = [a for a in release["assets"] if a["name"] == "SHA256SUMS.txt"]
+          assert len(checksum) == 1
+          new_sum = "sha256:" + hashlib.sha256((temp / "release-assets/SHA256SUMS.txt").read_bytes()).hexdigest()
+          old_sum = "sha256:37bf14794121800c72f18b5982f9569d2d3d3e8983f74f301c248db085020fc1"
+          assert checksum[0]["digest"] in (new_sum, old_sum)
+          if checksum[0]["digest"] != new_sum:
+              subprocess.run(["gh", "release", "upload", "v1.1.0",
+                              str(temp / "release-assets/SHA256SUMS.txt"), "--clobber"], check=True)
+          release = json.loads(subprocess.check_output([
+              "gh", "api", f"repos/{os.environ['GH_REPO']}/releases/{release['id']}"]))
+          expected = {"focus_period.mpl", "QUICK_START.txt", "SHA256SUMS.txt"}
+          assert {a["name"] for a in release["assets"]} == expected, "Unexpected release asset names"
           for asset in release["assets"]:
               local = (temp / "release-assets" / asset["name"]).read_bytes()
               assert asset["size"] == len(local)
               assert asset["digest"] == "sha256:" + hashlib.sha256(local).hexdigest()
           print("DRAFT VERIFIED: title, version, asset names, sizes and SHA256 digests")
           PY
-          gh release edit v1.1.0 --draft=false --latest
+          gh release edit v1.1.0 --notes-file "$assets/release-body.md" --draft=false --latest
           gh release view v1.1.0 --json url,name,tagName,isDraft,isPrerelease

@@ -9,7 +9,7 @@ from pathlib import Path
 # 故意绑定本次审阅后的版本和源码；后续发布仍须另行取得用户确认。
 VERSION = "1.1.0"
 SOURCE_SHA256 = "dbb3f527d39b7eab43c2e9c4d13e54adaddd3efc5a68e6103079b753ea68fe41"
-ASSET_NAMES = ("focus_period.mpl", "快速使用.txt", "SHA256SUMS.txt")
+ASSET_NAMES = ("focus_period.mpl", "QUICK_START.txt", "SHA256SUMS.txt")
 
 
 def prepare(output: Path) -> None:
@@ -39,7 +39,7 @@ def prepare(output: Path) -> None:
     (output / ASSET_NAMES[2]).write_bytes(sums.encode("utf-8"))
     notes = (
         "只运行计算程序时，下载附件 **focus_period.mpl** 即可；"
-        "`快速使用.txt` 给出调用和查询方法，`SHA256SUMS.txt` 用于核对附件字节。"
+        "`QUICK_START.txt` 给出调用和查询方法，`SHA256SUMS.txt` 用于核对附件字节。"
         "需要全部示例、原生 `.mw` 工作表和说明时，下载 **Source code (zip)**。\n\n"
         "## 快速使用\n\n在 Maple 的可执行输入区运行，并修改 read 的实际路径：\n\n"
         f"```maple\n{quick_code}```\n\n"
