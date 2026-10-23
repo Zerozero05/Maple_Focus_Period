@@ -1,11 +1,15 @@
 name: Publish confirmed v1.1.0
 
-# 用户已明确确认本次 v1.1.0。仅该标签触发，不自动批准任何后续版本。
+# 用户已明确确认本次 v1.1.0；恢复入口也绑定该版本和固定提交说明。
 # 使用 GitHub 托管 runner 的内置 gh；不读取本机账号凭据。
 on:
   push:
     tags:
       - v1.1.0
+    branches:
+      - main
+    paths:
+      - .github/workflows/release.yml
 
 permissions:
   contents: write
@@ -16,13 +20,21 @@ concurrency:
 
 jobs:
   release:
-    if: github.repository == 'Zerozero05/Maple_Focus_Period' && github.ref == 'refs/tags/v1.1.0'
+    if: >-
+      github.repository == 'Zerozero05/Maple_Focus_Period' &&
+      (github.ref == 'refs/tags/v1.1.0' ||
+       (github.ref == 'refs/heads/main' &&
+        github.event.head_commit.message == 'release: resume confirmed v1.1.0 publication'))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/v1.1.0
       - name: Prepare the confirmed source and three assets
-        run: python3 tools/prepare_release.py "$RUNNER_TEMP/release-assets"
+        run: |
+          test "$(git rev-parse HEAD)" = db06a775d1f1965f1b535b8884954c8cb29c4fb4
+          python3 tools/prepare_release.py "$RUNNER_TEMP/release-assets"
       - name: Create draft, verify uploaded bytes, then publish
         env:
           GH_TOKEN: ${{ github.token }}
@@ -31,10 +43,29 @@ jobs:
         run: |
           set -euo pipefail
           assets="$RUNNER_TEMP/release-assets"
-          gh release create v1.1.0 \
-            "$assets/focus_period.mpl" "$assets/快速使用.txt" "$assets/SHA256SUMS.txt" \
-            --draft --verify-tag --title v1.1.0 --notes-file "$assets/release-body.md"
-          gh api "repos/$GH_REPO/releases/tags/v1.1.0" > "$RUNNER_TEMP/release-info.json"
+          # 按标签接口只查公开发行版；草稿必须经授权列表按tag定位。
+          gh api "repos/$GH_REPO/releases?per_page=100" > "$RUNNER_TEMP/releases.json"
+          state=$(python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          releases = json.loads((Path(os.environ["RUNNER_TEMP"]) / "releases.json").read_text())
+          matches = [r for r in releases if r["tag_name"] == "v1.1.0"]
+          assert len(matches) <= 1
+          print("missing" if not matches else "draft" if matches[0]["draft"] else "published")
+          PY
+          )
+          if [ "$state" = published ]; then
+            gh release view v1.1.0 --json url,name,tagName,isDraft,isPrerelease
+            exit 0
+          fi
+          if [ "$state" = missing ]; then
+            gh release create v1.1.0 \
+              "$assets/focus_period.mpl" "$assets/快速使用.txt" "$assets/SHA256SUMS.txt" \
+              --draft --verify-tag --title v1.1.0 --notes-file "$assets/release-body.md"
+          fi
+          gh api "repos/$GH_REPO/releases?per_page=100" > "$RUNNER_TEMP/releases.json"
           python3 - <<'PY'
           import hashlib
           import json
@@ -42,7 +73,10 @@ jobs:
           from pathlib import Path
 
           temp = Path(os.environ["RUNNER_TEMP"])
-          release = json.loads((temp / "release-info.json").read_text())
+          releases = json.loads((temp / "releases.json").read_text())
+          matches = [r for r in releases if r["tag_name"] == "v1.1.0"]
+          assert len(matches) == 1
+          release = matches[0]
           assert release["draft"] and release["name"] == release["tag_name"] == "v1.1.0"
           expected = {"focus_period.mpl", "快速使用.txt", "SHA256SUMS.txt"}
           assert {a["name"] for a in release["assets"]} == expected
