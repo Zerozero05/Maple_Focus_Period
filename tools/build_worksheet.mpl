@@ -37,7 +37,7 @@ BuildWorksheet := proc(outputFile::string,
             style=Heading1, layout=Heading1, alignment=left))),
         Text("先修改下方 repoRoot 为下载仓库的根目录，再由上至下执行各组输入。此示例执行 restart，建议在独立工作表中运行。核心算法只保存在 src/focus_period.mpl；本工作表用于设置系统、阶数并查看计算结果。"),
         Text("Windows 路径必须正确书写：推荐用正斜杠 /，例如 D:/Maple/Maple_Focus_Period。若使用反斜杠，每个分隔符须写成双反斜杠。不要把资源管理器的单反斜杠路径直接粘入字符串，否则目录分隔符会被按转义字符处理，导致 currentdir、read 失败，随后报 FocusPeriod 不是模块。项目根目录应直接包含 src、examples 等文件夹。"),
-        Text("红色的一维 Maple Input 是可执行代码，可以直接运行，无须转换成二维数学公式；普通文字区仅用于说明，不执行。请先执行第 1 块并确认版本显示为 1.0.1，再运行其余输入块；也可点击执行工作表。"),
+        Text("红色的一维 Maple Input 是可执行代码，可以直接运行，无须转换成二维数学公式；普通文字区仅用于说明，不执行。请先执行第 1 块并确认版本显示为 1.1.0，再运行其余输入块；也可点击执行工作表。此工作表对应v1.1.0，旧v1.0.1附件不含新增研究接口。替换主程序后须restart并重新read，已加载模块不会自动更新。"),
         Text("固定 x=r*cos(theta)、y=r*sin(theta)，所以 H[0]=-1。g[n] 采用 u[n](2*Pi)/(2*Pi)，n>=2。P 的时间密度取负号，保证 P(0)=2*Pi；只有已独立证明为中心时，P 才是真实周期函数。"),
 
         Heading("1. 加载核心程序"),
@@ -62,6 +62,10 @@ BuildWorksheet := proc(outputFile::string,
         Text("此系统在 a 非零时为焦点；周期栏是形式时间展开。采用本工作表的角方向，g[3]=-a，g[5]=a*b+3*Pi*a^2。不要把有限个焦点量为零当成中心证明。"),
         Code("Xf := y+a*x*(x^2+y^2)+b*y*(x^2+y^2):\nYf := -x+a*y*(x^2+y^2)-b*x*(x^2+y^2):\nfocus := FocusPeriod:-Compute(Xf,Yf,x,y,5,4):\nFocusPeriod:-Show(focus);\nfocus[\"g\"][3];\nfocus[\"g\"][5];\nfocus[\"p\"][4];"),
         Text("可单独指定输出阶数，例如只算焦点量：FocusPeriod:-Compute(Xf,Yf,x,y,7,0)；只算中心的周期系数：FocusPeriod:-Compute(X,Y,x,y,0,6)。"),
+        Heading("6. 可选研究分析：中心证据、自然振幅与参数展开"),
+        Text("当前中心示例可通过反射可逆性核验。新tau是自然振幅下的偶次周期常数，原始g/p仍完整保留；临界周期根仅是截断候选。所有入口仍来自同一focus_period.mpl。更多参数条件、正时间逆图、笛卡尔L及复现记录见docs/advanced_usage.md和examples/04_research.mpl。"),
+        Code("certificate := FocusPeriod:-CenterCertificate(ans):\ncertificate[\"status\"];\nperiod_data := FocusPeriod:-CenterPeriod(ans):\nperiod_data[\"alpha_series\"];\nperiod_data[\"tau\"][1];\nperiod_data[\"tau\"][2];\nperiod_data[\"odd_residual\"];\njet_data := FocusPeriod:-ParameterJet(X,Y,x,y,5,4,{a=1,b=2},{a=1,b=0},1):\njet_data[\"parameter_jet\"][\"p_coefficients\"][2,1];"),
+        Text("上面odd_residual应为0，参数方向一阶p2系数应为-2*Pi。有限个g为零仍不能证明中心，formal模式不提供中心证明；局部参数展开也不等于完整多参数通式。"),
         Text("参考算法：Zhang、Hou、Zeng (2000)，Computers & Mathematics with Applications 40，771–782，第 2 节与附录。本模块推广到任意多项式次数，并保留用户约定的 H[0]=-1 与 g 的方向。")
     );
 
